@@ -15,16 +15,13 @@
 package com.wipro.ats.bdre.md.triggers;
 
 import com.wipro.ats.bdre.exception.MetadataException;
-import com.wipro.ats.bdre.md.dao.ProcessTypeDAO;
 import com.wipro.ats.bdre.md.dao.jpa.Process;
-import com.wipro.ats.bdre.md.dao.jpa.ProcessType;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.log4j.Logger;
 import org.hibernate.event.spi.*;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by SH324337 on 12/18/2015.
@@ -65,6 +62,7 @@ public class MetadataPersistenceTrigger implements PreUpdateEventListener, PreIn
         processTypeMap.put(27,26);
         processTypeMap.put(28,0);
         processTypeMap.put(29,28);
+        processTypeMap.put(30,2);
     }
     private void processTypeValidator(Object object) {
         Process process = (Process) object;
@@ -96,7 +94,12 @@ public class MetadataPersistenceTrigger implements PreUpdateEventListener, PreIn
 
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
+        UUID idOne = UUID.randomUUID();
+        System.out.println("UUID is "+idOne);
         if (event.getEntity() instanceof Process) {
+            if (((Process) event.getEntity()).getProcessCode()==null)
+            ((Process) event.getEntity()).setProcessCode(idOne.toString());
+
             processTypeValidator(event.getEntity());
         }
         return false;

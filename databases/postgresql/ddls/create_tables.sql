@@ -108,7 +108,7 @@ UPDATE NO ACTION,
 CREATE TABLE properties_template (
   process_template_id int NOT NULL references process_template(process_template_id) ON
 DELETE NO ACTION ON UPDATE NO ACTION,
-  config_group varchar(10) NOT NULL,
+  config_group varchar(128) NOT NULL,
   prop_temp_key varchar(128) NOT NULL,
   prop_temp_value varchar(2048) NOT NULL,
   description varchar(1028) NOT NULL,
@@ -127,6 +127,7 @@ CREATE TABLE process (
   description varchar(256) NOT NULL,
   add_ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   process_name varchar(45) NOT NULL,
+  process_code VARCHAR(256),
   bus_domain_id int NOT NULL references bus_domain(bus_domain_id) ON DELETE NO ACTION ON
 UPDATE NO ACTION,
   process_type_id int NOT NULL references process_type(process_type_id) ON DELETE NO ACTION
@@ -155,7 +156,7 @@ DELETE NO ACTION ON UPDATE NO ACTION,
 CREATE TABLE properties (
   process_id int NOT NULL references process(process_id) ON DELETE NO ACTION ON UPDATE NO
 ACTION,
-  config_group varchar(10) NOT NULL,
+  config_group varchar(128) NOT NULL,
   prop_key varchar(128) NOT NULL,
   prop_value varchar(2048) NOT NULL,
   description varchar(1028) NOT NULL,

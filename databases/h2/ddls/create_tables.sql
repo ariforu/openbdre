@@ -66,7 +66,7 @@ CREATE TABLE  process_template  (
 );
 CREATE TABLE properties_template (
   process_template_id integer NOT NULL,
-  config_group varchar(10) NOT NULL,
+  config_group varchar(128) NOT NULL,
   prop_temp_key varchar(128) NOT NULL,
   prop_temp_value varchar(2048) NOT NULL,
   description varchar(1028) NOT NULL,
@@ -83,6 +83,7 @@ CREATE TABLE process (
   process_type_id integer NOT NULL,
   parent_process_id integer DEFAULT NULL,
   can_recover boolean DEFAULT true,
+   process_code VARCHAR(256),
   enqueuing_process_id integer NOT NULL DEFAULT 0,
   batch_cut_pattern varchar(45) DEFAULT NULL,
   next_process_id varchar(256) NOT NULL DEFAULT '',
@@ -100,7 +101,7 @@ CREATE TABLE process (
 
 CREATE TABLE properties (
   process_id integer NOT NULL,
-  config_group varchar(10) NOT NULL,
+  config_group varchar(128) NOT NULL,
   prop_key varchar(128) NOT NULL,
   prop_value varchar(2048) NOT NULL,
   description varchar(1028) NOT NULL,
