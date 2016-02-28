@@ -67,7 +67,7 @@ public class ActionNode extends OozieNode {
 
     private ProcessInfo processInfo = new ProcessInfo();
     private List<GenericActionNode> containingNodes = new ArrayList<GenericActionNode>();
-
+private int mySonarTest=0;
     /**
      * This constructor sets id for Action Node
      *
