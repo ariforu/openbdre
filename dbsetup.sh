@@ -1,5 +1,4 @@
 #!/bin/bash
-
 database=h2
 hibernate_connection_driver_class=org_h2_Driver
 hibernate_connection_url=jdbc:h2:~/bdre
