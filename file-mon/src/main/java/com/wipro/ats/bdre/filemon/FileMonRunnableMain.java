@@ -36,6 +36,7 @@ import java.util.Properties;
  */
 public class FileMonRunnableMain extends BaseStructure {
 
+    public static final String ARCHIVE = "_archive";
     private static final Logger LOGGER = Logger.getLogger(FileMonRunnableMain.class);
     private static String monitoredDirName = "";
     private static String filePattern = "";
@@ -110,9 +111,9 @@ public class FileMonRunnableMain extends BaseStructure {
             CommandLine commandLine = getCommandLine(params, PARAMS_STRUCTURE);
 
             GetProcess getProcess = new GetProcess();
-            List<ProcessInfo> subProcessList = getProcess.execute(params);
-            subProcessId = subProcessList.get(1).getProcessId().toString();
-
+            List<ProcessInfo> subProcessList = getProcess.getSubProcesses(params);
+            subProcessId = subProcessList.get(0).getProcessId().toString();
+            LOGGER.info("subProcessId="+subProcessId);
             GetProperties getProperties = new GetProperties();
             Properties properties = getProperties.getProperties(subProcessId, "fileMon");
             LOGGER.info("property is " + properties);
@@ -137,9 +138,11 @@ public class FileMonRunnableMain extends BaseStructure {
             String dir = FileMonRunnableMain.getMonitoredDirName();
             DefaultFileMonitor fm = new DefaultFileMonitor(FileMonitor.getInstance());
             FileObject listenDir = fsManager.resolveFile(dir);
+            FileObject archiveDir = fsManager.resolveFile(dir+"/"+ARCHIVE);
             LOGGER.debug("Monitoring directories " + dir);
-            fm.setRecursive(false);
+            fm.setRecursive(true);
             fm.addFile(listenDir);
+            fm.removeFile(archiveDir);
             fm.start();
             //Now scan the mondir for existing files and add to queue
             FileScan.scanAndAddToQueue();

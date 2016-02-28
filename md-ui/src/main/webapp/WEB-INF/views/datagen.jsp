@@ -9,6 +9,17 @@
 
 <head>
     <title>BDRE | Bigdata Ready Enterprise</title>
+
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	  //Please replace with your own analytics id
+	  ga('create', 'UA-72345517-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
+
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../js/jquery.min.js"></script>
     <link href="../css/jquery-ui-1.10.3.custom.css" rel="stylesheet">
@@ -162,6 +173,50 @@ function formIntoMap(typeProp, typeOf) {
                 
             </form>
             </section>
+
+            <h3>Process Details</h3>
+                            <section>
+                                <form class="form-horizontal" role="form" id="processFieldsForm3">
+                                    <div id="processDetails">
+                                        <div class="alert alert-info" role="alert">
+                                            Application requires process details to create process entries in metadata
+                                        </div>
+                                        <!-- btn-group -->
+                                        <div id="processFields">
+
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2" for="processName">Process Name:</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control"  id="processName" name="processName" placeholder="Enter Process Name" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2" for="processDescription">Process Description:</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="processDescription" name="processDescription" placeholder="Enter Process Description" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2" for="outputPath">HDFS Output Path:</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="outputPath" name="outputPath" placeholder="Enter the absolute Output Path" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-sm-2" for="busDomainId">Bus Domain Id:</label>
+                                                <div class="col-sm-10">
+                                                    <select class="form-control" id="busDomainId" name="busDomainId">
+                                                        <option ng-repeat="busDomain in busDomains.Options" value="{{busDomain.Value}}" name="busDomainId">{{busDomain.DisplayText}}</option>
+
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /btn-group -->
+                                    </div>
+                                    </form>
+                                    </section>
+
             <h3>Confirm</h3>
             <section>
             <div id="createProcess">
@@ -241,26 +296,39 @@ function getGenTypes(){
     <script>
         var app = angular.module('myApp', []);
         app.controller('myCtrl', function($scope) {
-            $scope.crawlerMap = getGenConfigMap('crawler');
+            $scope.crawlerMap = getGenConfigMap('datagen');
             $scope.generatedType = {};
+             $.ajax({
+                        url: '/mdrest/genconfig/testDataGen/',
+                            type: 'GET',
+                            dataType: 'json',
+                            async: false,
+                            success: function (data) {
+                                $scope.generatedType = data;
+                                console.log(data);
+                            },
+                            error: function () {
+                                alert('danger');
+                            }
+                        });
+            $scope.busDomains={};
             $.ajax({
-            url: '/mdrest/genconfig/testDataGen/',
-                type: 'GET',
-                dataType: 'json',
-                async: false,
-                success: function (data) {
-                    $scope.generatedType = data;
-                    console.log(data);
-                },
-                error: function () {
-                    alert('danger');
-                }
-            });
-            
+                        url: '/mdrest/busdomain/options/',
+                            type: 'POST',
+                            dataType: 'json',
+                            async: false,
+                            success: function (data) {
+                                $scope.busDomains = data;
+                            },
+                            error: function () {
+                                alert('danger');
+                            }
+                        });
 
             $scope.createJob =function (){
                 formIntoMap('type_','processFieldsForm1');
             formIntoMap('other_','processFieldsForm2');
+            formIntoMap('process_','processFieldsForm3');
                 console.log(map2);
             $.ajax({                    
                                         

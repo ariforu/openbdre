@@ -1,210 +1,367 @@
-### Overview
+# Bigdata Ready Enterprise Open Source Software
+## Table of Contents
 
-This document will help you build BDRE from source. Audience for this document are developers and architects who want be part of BDRE framework development or may just want to test it by running the UI. 
+[License](#license)
+[Objective](#objective)
+[Features](#features)
+[Demo videos](#demo-videos)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Data Ingestion](#data-ingestion)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Workflow Builder](#workflow-builder)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Bulk Data Manufacturing](#bulk-data-manufacturing)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Web Crawler](#web-crawler)
+[Architecture](#architecture)
+[Installation](#installation)
+[Operational Metadata Management System](#operational-metadata-management-system)
+[How To Contribute](#how-to-contribute)
 
-* Install Git, MVN and Oracle JDK 7(and up) if you haven't already. In Windows be sure to add git and other bash tools in the commandline path during installation. To get started download and install following software.
- - Oracle JDK 7 
- - Git Command line Client [Download](https://git-scm.com/download)
- - Maven [Download](http://apache.mirrors.pair.com/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.zip)
- - IntelliJ Idea [Download](https://www.jetbrains.com/idea/download/)
- - VirtualBox [Download](https://www.virtualbox.org/wiki/Downloads) and Cloudera QuickStart VM 5.2 for VirtualBox
- - Google Chrome Browser
- 
-BDRE is by default configured to run with H2 embedded database which is okay for evaluating and testing jobs in a single node cluster. For production use BDRE currently supports following production scale databases.
+# License
+Released under Apache Public License 2.0. You can get a copy of the license at http://www.apache.org/licenses/LICENSE-2.0.
+# Objective
+Big Data Ready Enterprise(BDRE) makes big data technology adoption simpler by optimizing and integrating various big data solutions and providing them under one integrated package. BDRE provides a uniﬁed framework for a Hadoop implementation that can drastically minimize development time and fast track the Hadoop implementation. It comprises a reusable framework that can be customized as per the enterprise ecosystem. The components are loosely integrated and can be de-coupled or replaced easily with alternatives.
 
-  - MySQL Server
-  - Oracle 11g Server
-  - PostgreSql
+The primary goal of BDRE is to accelerate Bigdata implementations by supplying the essential frameworks that are most likely to be written from scratch. It can drastically reduce effort by eliminating hundreds of man hours in operational framework development. Big Data implementations however, require specialized skills, signiﬁcant development effort on data loading, semantic processing, DQ, code deployment across environments etc.
 
- In this guide we are going to show you how to build and install BDRE in a Cloudera QuickStart Hadoop VM which is Linux based. You should be able to do the same in Mac or Windows but note that setting up a Hadoop cluster might be tricky. You should be able to launch the BDRE user interface in Windows and design various jobs. However to deploy and run the jobs we recommend a Linux system with Hadoop installed. BDRE is typically installed in Hadoop edge node in a multi-node cluster.
+# Features
 
-### Setup
+- Operational Metadata Management
+ - Registry of all workflow processes/templates
+ - Parameters/configuration(key/value) for processes
+ - Dependency information (upstream/downstream)
+ - Batch management/tracking. Batch concept in BDRE is for tracking the data flow between workflow processes.
+ - Run control (for delta processing/dependency check)
+ - Execution status for jobs(dynamic metadata - with step level granularity)
+ - File registry - can be used to register e.g. ingested files or a raw file as an output of an upstream.
+ - Execution statistics logging (key/value)
+ - Executed hive queries and data lineage information.
+ - Java APIs that integrates with Big Data with non-Big Data applications alike.
+ - Job monitoring and proactive/reactive alerting
+- Data ingestion framework
+ - Tabular data from RDBMS
+ - Streaming data from 16 types of sources (including logs, message queues and Twitter)
+ - Arbitrary file ingestion by directory monitoring
+- Web Crawler
+- Distributed Data Manufacturing framework
+ - Generate billions of records based on patterns and ranges
+- Semantic Layer Building Framework
+ - Build the semantic layer using visual workflow creator using the data you ingested.
+ - Supports Hive, Pig, MapReduce, Spark, R etc.
+ - Generates Oozie workflows
+- Data Quality Framework
+ - Validates your data using your rules in a distributed way
+ - Integrated with Drools rule engine
+- HTML5 User Interface
+ - Create ingestion, data generation, Crawler jobs or create Oozie workflows graphically without writing any code
+ - One click deploy and execute jobs without SSH into the edge node.
 
-This section is applicable for those who need with Git or Maven setup. You may skip the setup section if you already have git/maven set up and properly working.
+# Demo Videos
+## Data Ingestion
 
-#### Git
+### RDBMS Data Ingestion
+
+<a href="http://www.youtube.com/watch?v=JcbYU7oEmxc" target="_blank"><img src="http://wiproopensourcepractice.github.io/openbdre/bdreimages/rdbms.PNG"
+alt="BDRE RDBMS data ingestion demo video" width="240" height="180" border="10" /></a>
 
 
-`Note` while installing git in `Windows` (Gitbash) please select following options
+### Streaming Data Ingestion
 
-- Checkout Windows-style commit unix-style line endings
-- Run git and included Unix tools from the Windows command prompt
+<a href="http://www.youtube.com/watch?v=1yqoAVENrjo" target="_blank"><img src="http://wiproopensourcepractice.github.io/openbdre/bdreimages/twitter.PNG"
+alt="BDRE Twitter Ingestion demo video" width="240" height="180" border="10" /></a>
 
-After installing Git first set your full name (like John Doe) and email id in git config using following command.
+
+### Directory Monitoring and File Ingestion
+
+<a href="http://www.youtube.com/watch?v=IhDMYase1fU" target="_blank"><img src="http://wiproopensourcepractice.github.io/openbdre/bdreimages/filemon.PNG"
+alt="BDRE File ingestion demo video" width="240" height="180" border="10" /></a>
+
+## Workflow Builder
+
+<a href="http://www.youtube.com/watch?v=PG6Qvg-pKO0" target="_blank"><img src="http://wiproopensourcepractice.github.io/openbdre/bdreimages/wfd.PNG"
+alt="BDRE Workflow Designer demo video" width="240" height="180" border="10" /></a>
+
+## Bulk Data Manufacturing
+Demo video TBD
+## Web Crawler
+
+<a href="http://www.youtube.com/watch?v=0b6dWGxin4Y" target="_blank"><img src="http://wiproopensourcepractice.github.io/openbdre/bdreimages/crawler.PNG"
+alt="BDRE Web Crawling" width="240" height="180" border="10" /></a>
+
+# Architecture
+
+![image](http://wiproopensourcepractice.github.io/openbdre/bdreimages/architecture.PNG)
+
+# Installation
+
+## Overview
+
+This section will help you build BDRE from source. Audience for this document are developers and architects who want be part of BDRE framework development or may just want to evaluate it.
+
+### General Prerequisite
+
+For testing/development purpose and to save time, use the fully loaded Hadoop VMs from Cloudera or Hortonworks because all the required software are typically installed and configured.
+
+- A Hadoop Cluster
+ - In this section we are using *Hortonworks Sandbox 2.2.0*
+- Git 1.9 and up
+- Maven 3 and up
+- Oracle JDK 7(and up)
+- BDRE is shipped with an embedded database which is okay for running the UI and evaluating and testing jobs in a single node cluster.
+For production use BDRE currently supports following production scale databases.)
+  - MySQL Server 5.1 and up
+  - Oracle 11g Server or better
+  - PostgreSQL
+- Google Chrome browser
+
+You should be able to do the same in Mac or Windows but note that setting up a Hadoop cluster might be tricky in Windows and might require more involvement. However to deploy and run the jobs we recommend a Linux system. BDRE is typically installed in Hadoop edge node in a multi-node cluster.
+
+## Preparation
+
+* Download and install VirtualBox from https://www.virtualbox.org/
+* Download and install Hortonworks Sandbox 2.2 Virtual Box image from http://hortonworks.com/products/releases/hdp-2-2/#install
+* Setup a 'Host-Only Adapter' for network to enable communication between Host and Guest OS.
+* Now ssh into the sandbox using *root@VM_IP* (password hadoop)
+    - The VM_IP is usually something between 192.168.56.101 - 192.168.56.109
+
+* Now create *openbdre* user account.
+
+    ```shell
+    [root@sandbox ~]# adduser -m -s /bin/bash openbdre
+    [root@sandbox ~]# passwd openbdre
+    Changing password for user openbdre.
+    New password:
+    Retype new password:
+    passwd: all authentication tokens updated successfully.
+    ```
+* As root edit /etc/sudoers and allow openbdre to perform `sudo`. Below will do it
+
+    ```shell
+    echo "openbdre ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+    ```
+
+* Login to the HDP Sandbox with the newly created openbdre user. You can perform a **su openbdre** to switch to this account. Please make sure you are not root user beyond this point.
+
+    ```shell
+    [root@sandbox ~]# su openbdre
+    [openbdre@sandbox root]$ cd ~
+    [openbdre@sandbox ~]$
+    ```
+
+* Download Maven from a mirror, unpack and add to the PATH.
+
+    ```shell
+    [openbdre@sandbox ~]# wget http://www.us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
+    [openbdre@sandbox ~]# unzip apache-maven-3.3.9-bin.zip
+    [openbdre@sandbox ~]# export PATH=$PATH:/home/openbdre/apache-maven-3.3.9/bin
+    ```
+
+## Building BDRE from source
+
+1. Obtain the source code
+ * cd to the home directory of openbdre.
+
+    ```shell
+    [openbdre@sandbox ~]# cd ~
+    ```
+
+ * Pull BDRE source from this git repository. To find out your repository link navigate to the repository in this website and copy the https repo URL.
+
+    ```shell
+    [openbdre@sandbox ~]# git clone https://github.com/WiproOpenSourcePractice/openbdre.git
+    ```
+
+ * cd to the cloned source dir (so you can be in /home/openbdre/openbdre)
+
+    ```shell
+    [openbdre@sandbox ~]# cd openbdre
+    ```
+
+2. Database Setup
+    * Execute the dbsetup.sh script without any parameters as shown below. In this example, we are going to use MySQL as BDRE backend as it's already available in the HDP Sandbox. If you would like to use another database please select it accordingly.
+
+    ```shell
+    [openbdre@sandbox ~]# sh dbsetup.sh
+    ```
+
+    ```shell
+    [openbdre@sandbox openbdre]$ sh dbsetup.sh⏎
+    Supported DB
+    1) Embedded (Default - Good for running BDRE user interface only. )
+    2) Oracle
+    3) MySQL
+    4) PostgreSQL
+
+    Select Database Type(Enter 1, 2, 3 , 4 or leave empty and press empty to select the default DB):3⏎
+
+    Enter DB username (Type username or leave it blank for default 'root'):⏎
+    Enter DB password (Type password or leave it blank for default '<blank>'):⏎
+    Enter DB hostname (Type db hostname or leave it blank for default 'localhost'):⏎
+    Enter DB port (Type db port or leave it blank for default '3306'):⏎
+    Enter DB name (Type db name or leave it blank for default 'bdre'):⏎
+    Enter DB schema (Type schema or leave it blank for default 'bdre'):⏎
+    Please confirm:
+
+    Database Type: mysql
+    JDBC Driver Class: com.mysql.jdbc.Driver
+    JDBC Connection URL: jdbc:mysql://localhost:3306/bdre
+    Database Username: root
+    Database Password:
+    Hibernate Dialect: org.hibernate.dialect.MySQLDialect
+    Database Schema: bdre
+    Are those correct? (type y or n - default y):y⏎
+    Database configuration written to ./md-dao/src/main/resources/db.properties
+    Will create DB and tables
+    Tables created successfully in MySQL bdre DB
+    ```
+
+3. Building
+ * Now build BDRE using (note BDRE may not compile if the **settings.xml** is not passed from the command line so be sure to use the *-s* option. When building for the first time, it might take a while as maven resolves and downloads the jar libraries from different repositories.
+
+    ```shell
+    mvn -s settings.xml clean install -P hdp22
+    ```
+ * *Note:* Selecting hdp22 will compile BDRE with HDP 2.2 libraries and automatically configure BDRE with properties from  databases/setup/profile.hdp22.properties . These properties can later be altered from the BDRE Settings page under Administration.
+
+    databases/setup/profile.hdp22.properties looks like this.
+
+ ```properties
+    bdre_user_name=openbdre
+    name_node_hostname=sandbox.hortonworks.com
+    name_node_port=8020
+    job_tracker_port=8050
+    flume_path=/usr/hdp/current/flume-server
+    oozie_host=sandbox.hortonworks.com
+    oozie_port=11000
+    thrift_hostname=sandbox.hortonworks.com
+    hive_server_hostname=sandbox.hortonworks.com
+    drools_hostname=sandbox.hortonworks.com
+    hive_jdbc_user=openbdre
+    hive_jdbc_password=openbdre
+ ```
+
+| Building BDRE for Cloudera QuickStart VM |
+| ------------- |
+| Similarly one should be able to build this using *-P cdh52* which will configure BDRE for CDH 5.2 QuickStart VM. During building it'll pick up the environment specific configurations from <source root>/databases/setup/profile.*cdh52*.properties. BDRE virtually works with any Hadoop distribution including IBM's BigInsight platform in Bluemix|
+
+
+    ```shell
+    $ mvn -s settings.xml clean install -P hdp22
+    [INFO] Scanning for projects...
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Reactor Build Order:
+        .......blah blah.........
+        .......blah blah.........
+    [INFO] ------------------------------------------------------------------------
+    [INFO] BUILD SUCCESS
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Total time: 3:39.479s
+    [INFO] Finished at: Wed Dec 30 01:50:02 PST 2015
+    [INFO] Final Memory: 127M/2296M
+    [INFO] ------------------------------------------------------------------------
+    ```
+
+4. Installing BDRE
+ * After building BDRE successfully run
+
+    ```shell
+    sh install-scripts.sh local
+    ```
+ * It'll install the BDRE scripts and artifacts in /home/openbdre/bdre
+
+### Using BDRE
+
+* After a successful build, start the BDRE UI service
+
 ```shell
-git config --global user.name "Your Name"
-git config --global user.email "your_email@company.com"
+ sudo service bdre start
 ```
-Replace *Your Name* and *your_email* with your real name and your real email.
+* Start Oozie as the Oozie user incase Oozie isn't already started. ```ps -ef | grep -i oozie``` will help determine status of Oozie.
 
-Linux and Windows differ in how they handle line endings. The `git config core.autocrlf` command is used to change how Git handles line endings. It takes a single argument. So it is better to set the `autocrlf` in git accordingly to avoid further complications.
-
-```shell
-Windows:
-git config --global core.autocrlf true
-Linux:
-git config --global core.autocrlf input
-```
-
-For further changes to convert CRLF to LF when you are using Linux systems refer to this link (https://help.github.com/articles/dealing-with-line-endings/)
-
-Proxy setup while working behind a proxy network
-
-- If you are behind proxy then you need to setup proxy for command line operations. The easiest way to do that would be adding 3 environment variables before performing any git operations.
-
-```shell
-export http_proxy=http://<proxy username>:<proxy password>@<your proxy server>:<proxy port>
-export https_proxy=http://<proxy username>:<proxy password>@<your proxy server>:<proxy port>
-export no_proxy=localhost
-```
-Replace `export` with `set` if you are working in Windows.
-
-Git sometimes needs separate proxy configuration to connect to repositories.
-
-For e.g. to set proxy:
-
-```shell
-git config --global https.proxy https://<proxy username>:<proxy password>@<your proxy server>:<proxy port>
-git config --global http.proxy http://<proxy username>:<proxy password>@<your proxy server>:<proxy port>
-```
-
-Note: If your proxy uses Active Directory authentication then you may have to add `DOMAIN\` before the username.
-
-To reset configured proxy use this:
-
-```shell
-git config --global --unset https.proxy
-git config --global --unset http.proxy
-```
-
-#### Environment setup
-
-* Add `jdk` bin directory to the PATH env variable.
-* Add `JAVA_HOME` env variable with your installed jdk location.
-* Add `mvn` bin directory to the PATH env variable.
-* Add `M2_HOME` env variable with your installed maven location.
-
-#### Maven
-
-BDRE is built using Maven build tool. BDRE specific maven settings.xml is part of BDRE source code. Make your environment specific changes in $M2_HOME/conf/settings.xml.
-For example if you are behind a proxy or you want a mirror repo, you can use following in $M2_HOME/conf/settings.xml
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-    <mirrors>
-        <mirror>
-            <id>repo.maven.apache.org</id>
-            <name>repo.maven.apache.org</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-            <mirrorOf>central</mirrorOf>
-        </mirror>
-    </mirrors>
-    <proxies>
-        <proxy>
-            <id>optional</id>
-            <active>true</active>
-            <protocol>http</protocol>
-            <username>yourUserName</username>
-            <password>yourPassword</password>
-            <host>yourProxyHost</host>
-            <port>yourProxyPort</port>
-            <nonProxyHosts>localhost</nonProxyHosts>
-        </proxy>
-    </proxies>
-</settings>
-
-```
-
-### Building BDRE from source
-
-* Login to the Cloudera QuickStart VM.
-* Navigate to folder where you want to download BDRE source code and build it.
-* Pull BDRE source from this git repository. To find out your repository link navigate to the repository in this website and copy the https repo URL.
-
-```git clone <BDRE git URL>```
-* Now ```cd``` to the bdre source code folder that git created.
-
-### Database Setup (Optional section)
-* As mentioned before you's be able to build BDRE and run it with a H2 embedded database backend and hence no detabase setup is required if you want to test BDRE. However, here we'll demonstrate how to configure BDRE with MySQL backend.
-  - Create `db.properties` inside `md-dao/src/main/resources`
-  - Open newly created `md-dao/src/main/resources/db.properties` in a text editor and have following
-
-```properties
-##### Common entries #####
-hibernate.current_session_context_class=thread
-hibernate.transaction.factory_class=org.hibernate.transaction.JDBCTransactionFactory
-hibernate.show_sql=true
-
-#####Configuration for mysql#####
-
-database=mysql
-hibernate.connection.driver_class=com.mysql.jdbc.Driver
-hibernate.connection.url=jdbc:mysql://localhost:3306/platmd
-hibernate.connection.username=root
-hibernate.connection.password=root
-hibernate.dialect=org.hibernate.dialect.MySQLDialect
-hibernate.default_schema=platmd
-```
- - Similarly to use Oracle or PostgreSQL find the appropriate settings from the `databases/db.properties`
- - Cloudera VM already has MySQL server installed so create `platmd` DB and MySQL credentials
- - As root type
-  ```sql
-      mysql -u root -e "create database platmd;
-      mysqladmin -u root password 'root'
-      mysql -u root -p root platmd < databases/mysql/ddls/create-tables.sql
-  ```
-### Building
-     
-* Now build BDRE using 
-
-```mvn -s settings.xml clean install```
-
-
-### Running the BDRE Web UI
-
-* After a successful build, cd into md-rest-api folder and start the BDRE UI using 
-```shell sh ./quick-run.sh```
-* Use Google Chrome browser and open http://localhost:9999/mdui/pages/content.page
+    ```shell
+    su - oozie -c "/usr/hdp/current/oozie-server/bin/oozie-start.sh"
+    ps -ef | grep -i oozie
+    ```
+* Use *Google Chrome browser* from the host machine and open *http://VM_IP:28850/mdui/pages/content.page*
 * Login using admin/zaq1xsw2
 
-### Creating a Test Job
+### Creating, Deploying and Running a Test Job
 
-* Create a RDBMS data import job from *Job Setup From Template > New RDBMS Import Job*
-* Change the JDBC URL/credentials to your localhost MySQL platmd DB that contains BDRE metadata.
+* Create a RDBMS data import job from *Job Setup From Template > Import from RDBMS*
+* Change the JDBC URL/credentials to your local MySQL DB that contains some data.
 * Click *Test Connection*
-* Expand and select 2 - 3 tables (be sure to expand the tables before selecting).
+* Expand and select 1 table (be sure to expand the tables before selecting).
 * Create the jobs and see the pipeline.
-* Click *XML* , *Diagram* etc and check the generated Oozie workflow XML and diagram.
-* Click deploy button on process page corresponding to the process you want to deploy. ( Deploy button will show status regarding deployment of process, when you hover over the button.)
-* You have to provide executable permissions to every shell script present in home folder.
-* You have to edit deploy-env.properties. Set all properties based on your environment.
-* Process Deploy main class calls deploy script based on type of container process. For Example for process type 1 it will call process-type-1.sh script.
-* You have to setup a crontab in your environment. Crontab will run process-deploy.sh script present in home folder.
-    * for example `*/5 * * * * /home/cloudera/process-deploy.sh`.
-* After the deployment is complete and in UI the status for the process is deployed (turns green), you have to execute it.
-* Update Workflow.py and flume.sh according to your environment present in home folder.
-    * Update hostname variable in Workflow.py.
-    * Update `pathForFlumeng`, `pathForFlumeconf`, `pathForFlumeconfFile` variables in flume.sh.
-* To store logs for execution, you have to create log directory as mentioned in administration -> settings -> mdconfig -> execute.log-path. create directory and give permission for every user to write into it. `chmod -R 777 <folderName>`
-* Also update path in administration -> settings -> mdconfig -> execute.oozie-script-path tags for Workflow.py. And under administration -> settings -> mdconfig -> execute.standalone-script-path for flume.sh.
+* Click *XML*, *Diagram* etc. and check the generated Oozie workflow XML and diagram.
+* Search for 'Process' in the search window and open the 'Process' page
+* Click deploy button on process page corresponding to the process you want to deploy. (Deploy button will show status regarding deployment of process, when you hover over the button.)
+* Wait for 2 minutes and the deployment will be completed by then.
+* After the deployment is complete and in UI the status for the process is deployed (turns green).
+* Click the execution button to execute the *Import job*.
+* Check the process in Oozie console *http://VM_IP:11000/oozie*
+* When the import job is complete start the *data load job*.
 
-### Additional Setup
+# Operational Metadata Management System
 
-* Two additional jars are required for *flume-source* and JSON *SerDe*. For this to be done, download the zip from [here](https://github.com/cloudera/cdh-twitter-example.git) as these jars are still not available in the maven repository, they need to be custom built. 
-    - Goto *flume-sources* inside the folder and do `mvn clean install`.
-    - Goto *hive-serdes* inside the folder and do `mvn clean install`.
-    - From inside the flume-sources/target folder copy the `flume-sources-1.0-SNAPSHOT` jar to bdre-app/target/lib.
-    - From inside the hive-serdes/target folder copy the `hive-serdes-1.0-SNAPSHOT` jar to bdre-app/target/lib.
+BDRE provides complete job/operational metadata management solution for Hadoop. At its core acts as a registry and tracker for different types of jobs running in different Hadoop clusters or as a standalone. It provides APIs to integrate with virtually any jobs.
 
-### Open Project in IntelliJ Idea
 
-* We strongly recommend using IntelliJ Idea to develop BDRE. However BDRE should work fine with other Java IDEs
-* Start Idea and go to **File > Open ...** and then browse to the repo folder and open it.
-* Idea will automatically detect the maven projects and prompt to *Import Changes*. Import changes.
-* You *must* now create your own branch in the project when you are ready to contribute to BDRE.
-* For completed, committed and pushed changes, open *Merge Request*.
-* Good luck!
+![image](http://wiproopensourcepractice.github.io/openbdre/bdreimages/mdgraph.png)
 
+
+BDRE uses RDBMS database to store all job related metadata. A set of stored procedures are there to interface will the tables which are exposed via Java APIs to manage/create/update the static and run time metadata information. Below is the data model for BDRE metadata operational database.
+
+![eer](http://wiproopensourcepractice.github.io/openbdre/bdreimages/eer.png)
+
+# How to Contribute
+
+Contribution for the enhancements in BDRE are welcome and humbly requested by us. To contribute, please navigate to our GitHub project page and [fork](https://help.github.com/articles/fork-a-repo/) BDRE main repository under your own account. You can make changes to your own forked repository and then open a [Pull Request](https://help.github.com/articles/creating-a-pull-request) to merge your change with the main repo.
+
+<a class="buttons github" href="https://github.com/WiproOpenSourcePractice/openbdre">Goto BDRE@GitHub</a>
+
+ - Clone the main repo (if you havn't done already)
+
+```shell
+git clone "https://github.com/WiproOpenSourcePractice/openbdre.git"
+cd openbdre
+```
+
+ - Add your forked repo where you have write access and create your own branch.
+
+```shell
+git remote add myrepo https://<your id>:<your password>@github.com/<YOUR ACCT NAME>/openbdre.git
+git checkout -b mybranch
+```
+
+ - Make and commit your changes to your own branch.
+
+```shell
+git commit -am "My changes"
+```
+
+ - Push to your own branch in your own remote repo (myrepo).
+
+```shell
+git push myrepo mybranch
+```
+
+ - Everyday better pull from the main repo(origin) and sync your repo with it.
+
+```shell
+git checkout develop
+git pull origin develop
+```
+
+ - Keep the develop branch only to have the latest main repo content. Make changes while you are in your own branch.
+
+ - Sync your code with the main repo. Push the latest content pulled from the main repo to your own repo in your own branch.
+
+```shell
+git checkout mybranch
+git merge develop
+git push myrepo mybranch
+```
+
+ - When you are ready to submit your contribution to the main repo, please open a [pull request](https://help.github.com/articles/creating-a-pull-request).
+ - Please join the community https://groups.google.com/forum/#!forum/bdre. If you have any questions/suggestions please email to bdre-queries@googlegroups.com .
+ - If you want to report a bug, see/request a feature or work on something. Please sign up at https://openbdre.atlassian.net
+
+
+[![Analytics](https://ga-beacon.appspot.com/UA-72345517-2/openbdre/README.md)](http://wiproopensourcepractice.github.io/openbdre/bdreimages/badge.svg)

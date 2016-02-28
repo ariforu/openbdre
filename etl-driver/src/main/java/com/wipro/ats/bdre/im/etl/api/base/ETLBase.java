@@ -18,8 +18,9 @@ import com.wipro.ats.bdre.BaseStructure;
 import com.wipro.ats.bdre.IMConfig;
 import com.wipro.ats.bdre.im.IMConstant;
 import com.wipro.ats.bdre.im.etl.api.exception.ETLException;
-import com.wipro.ats.bdre.md.api.GetHiveTables;
-import com.wipro.ats.bdre.md.beans.GetHiveTablesInfo;
+import com.wipro.ats.bdre.md.api.GetProcess;
+import com.wipro.ats.bdre.md.api.GetProperties;
+import com.wipro.ats.bdre.md.beans.ProcessInfo;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.MetaException;
@@ -37,28 +38,49 @@ public abstract class ETLBase extends BaseStructure{
     private static final Logger LOGGER = Logger.getLogger(ETLBase.class);
 
 
-    private GetHiveTablesInfo rawTable;
-    private GetHiveTablesInfo baseTable;
-    private GetHiveTablesInfo rawView;
+    protected String rawLoad;
+    protected String stgLoad;
+    protected String baseLoad;
+    protected String rawTable;
+    protected String rawDb;
+    protected String stgView;
+    protected String stgDb;
+    protected String baseTable;
+    protected String baseDb;
     private String processId;
 
-    protected void init(String processId){
-        loadHiveTableInfo(processId);
+
+    protected void loadRawHiveTableInfo(String processId){
+        rawLoad = processId;
+        GetProperties getPropertiesOfRawTable = new GetProperties();
+        java.util.Properties rawPropertiesOfTable = getPropertiesOfRawTable.getProperties(rawLoad, "raw-table");
+        rawTable = rawPropertiesOfTable.getProperty("table_name");
+        rawDb = rawPropertiesOfTable.getProperty("table_db");
     }
-    private void loadHiveTableInfo(String processId){
-        String[] hiveTableParams = {"-p", processId};
-        GetHiveTables getHiveTables = new GetHiveTables();
-        List<GetHiveTablesInfo> hiveTablesInfos = getHiveTables.execute(hiveTableParams);
-       //TODO: THIS logic is wrong. The stageTable , view and coreTable may not be in order.
-        rawTable =hiveTablesInfos.get(0);
-        rawView =hiveTablesInfos.get(2);
-        baseTable =hiveTablesInfos.get(1);
+    protected void loadStageHiveTableInfo(String processId){
+        stgLoad = processId;
+        GetProperties getPropertiesOfRawTable = new GetProperties();
+        java.util.Properties rawPropertiesOfTable = getPropertiesOfRawTable.getProperties(stgLoad, "raw-table");
+        stgView=rawPropertiesOfTable.getProperty("table_name_raw")+"_view";
+        stgDb=rawPropertiesOfTable.getProperty("table_db_raw");
+        java.util.Properties basePropertiesOfTable = getPropertiesOfRawTable.getProperties(stgLoad, "base-table");
+        baseTable = basePropertiesOfTable.getProperty("table_name");
+        baseDb = basePropertiesOfTable.getProperty("table_db");
+    }
+    protected void loadBaseHiveTableInfo(String processId){
+        baseLoad = processId;
+        GetProperties getPropertiesOfBaseTable = new GetProperties();
+        java.util.Properties basePropertiesOfTable = getPropertiesOfBaseTable.getProperties(baseLoad, "base-table");
+        baseTable = basePropertiesOfTable.getProperty("table_name");
+        baseDb = basePropertiesOfTable.getProperty("table_db");
     }
     protected Connection getHiveJDBCConnection(String dbName){
         try {
             Class.forName(IMConstant.HIVE_DRIVER_NAME);
             String hiveConnection = IMConfig.getProperty("etl.hive-connection");
-            Connection con = DriverManager.getConnection(hiveConnection + "/" + dbName, "", "");
+            String hiveUser = IMConfig.getProperty("etl.hive-jdbcuser");
+            String hivePassword = IMConfig.getProperty("etl.hive-jdbcpassword");
+            Connection con = DriverManager.getConnection(hiveConnection + "/" + dbName, hiveUser, hivePassword);
             con.createStatement().execute("set hive.exec.dynamic.partition.mode=nonstrict");
             con.createStatement().execute("set hive.exec.dynamic.partition=true");
             con.createStatement().execute("set hive.exec.max.dynamic.partitions.pernode=1000");
@@ -91,7 +113,7 @@ public abstract class ETLBase extends BaseStructure{
         }
         return hclient;
     }
-    protected GetHiveTablesInfo getRawTable() {
+ /*   protected GetHiveTablesInfo getRawTable() {
 
         return rawTable;
     }
@@ -104,7 +126,7 @@ public abstract class ETLBase extends BaseStructure{
 
     protected GetHiveTablesInfo getRawView() {
         return rawView;
-    }
+    }*/
 
 
 }

@@ -13,6 +13,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html >
 	<head >
+
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	  //Please replace with your own analytics id
+	  ga('create', 'UA-72345517-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
+
 		<meta http-equiv = "Content-Type" content = "text/html; charset=UTF-8" >
 		<script src = "../js/jquery.min.js" ></script >
 		<link href = "../css/jquery-ui-1.10.3.custom.css" rel = "stylesheet" >
@@ -397,14 +408,34 @@
         list.push(myObject);
 
         var myObject = new Object();
-        myObject.name=$("#dbHive")[0].name;
-        myObject.value=$("#dbHive")[0].value;
+        myObject.name=$("#dbSchema")[0].name;
+        myObject.value=$("#dbSchema")[0].value;
         list.push(myObject);
+
+        var myObject = new Object();
+        myObject.name=$("#rawDBHive")[0].name;
+        myObject.value=$("#rawDBHive")[0].value;
+       list.push(myObject);
+
+         var myObject = new Object();
+         myObject.name=$("#baseDBHive")[0].name;
+         myObject.value=$("#baseDBHive")[0].value;
+         list.push(myObject);
 
          var myObject = new Object();
             myObject.name=$("#busDomainId")[0].name;
             myObject.value=$("#busDomainId")[0].value;
             list.push(myObject);
+
+          var myObject = new Object();
+                    myObject.name=$("#processName")[0].name;
+                    myObject.value=$("#processName")[0].value;
+                    list.push(myObject);
+
+          var myObject = new Object();
+                    myObject.name=$("#processDescription")[0].name;
+                    myObject.value=$("#processDescription")[0].value;
+                    list.push(myObject);
 
 
 
@@ -541,7 +572,8 @@ isInit=true;
                   $("#dbUser")[0].name+"="+encodeURIComponent($("#dbUser")[0].value) +
                   "&"+$("#dbURL")[0].name+"="+encodeURIComponent($("#dbURL")[0].value)  +
                   "&"+$("#dbPassword")[0].name+"="+encodeURIComponent($("#dbPassword")[0].value)  +
-                  "&"+$("#dbDriver")[0].name+"="+encodeURIComponent($("#dbDriver")[0].value) ;
+                  "&"+$("#dbDriver")[0].name+"="+encodeURIComponent($("#dbDriver")[0].value) +
+                   "&"+$("#dbSchema")[0].name+"="+encodeURIComponent($("#dbSchema")[0].value) ;
 
                    $.ajax({
                           type: "GET",
@@ -605,6 +637,8 @@ isInit=true;
 						<input id = "dbPassword" onchange = "treeData=null;" name = "common_dbPassword" type = "password" class = "form-control" value = "<fmt:message key='hibernate.connection.password' />" />
 						<label for = "dbDriver" >Database Driver</label >
 						<input id = "dbDriver" onchange = "treeData=null;" name = "common_dbDriver" type = "text" class = "form-control" value = "<fmt:message key='hibernate.connection.driver_class' />" />
+						<label for = "dbSchema" >Schema</label >
+                        <input id = "dbSchema" onchange = "treeData=null;" name = "common_dbSchema" type = "text" class = "form-control" value = "<fmt:message key='hibernate.default_schema' />" />
 						<div ><br /></div >
 						<button class = "btn btn-default  btn-success" type = "button" onClick = "verifyConnection()" href = "#" >
 							Test Connection
@@ -617,16 +651,28 @@ isInit=true;
 					<table id = "tree0" class = "table-striped" width = "290px" >
 						<thead >
 						<tr >
-							<th ><label for = "dbHive" >Hive DB</label ></th >
+							<th ><label for = "rawDBHive" >RAW Hive DB</label ></th >
 						</tr >
 						</thead >
 						<tbody >
 						<tr >
 							<td >
-								<input id = "dbHive" name = "common_dbHive" type = "text" class = "form-control" size = "180" value = "base" />
+								<input id = "rawDBHive" name = "common_rawDBHive" type = "text" class = "form-control" size = "180" value = "raw" />
 							</td >
 						</tr >
 						</tbody >
+						<thead >
+                        <tr >
+                            <th ><label for = "baseDBHive" >BASE Hive DB</label ></th >
+                        </tr >
+                        </thead >
+                        <tbody >
+                        <tr >
+                            <td >
+                                <input id = "baseDBHive" name = "common_baseDBHive" type = "text" class = "form-control" size = "180" value = "base" />
+                            </td >
+                        </tr >
+                        </tbody >
 					</table >
 
 
@@ -673,6 +719,29 @@ isInit=true;
                                 </td >
                             </tr >
                             </tbody >
+
+                             <th ><label for = "processName" >Process Name</label ></th >
+                                                        </tr >
+                                                        </thead >
+                                                        <tbody >
+                                                        <tr >
+                                                            <td >
+                                                                <input id = "processName" name = "common_processName" type = "text" class = "form-control" size = "180"  />
+                                                            </td >
+                                                        </tr >
+                                                        </tbody >
+
+                               <th ><label for = "processDescription" > Process Description</label ></th >
+                                                          </tr >
+                                                          </thead >
+                                                          <tbody >
+                                                          <tr >
+                                                              <td >
+                                                                  <input id = "processDescription" name = "common_processDescription" type = "text" class = "form-control" size = "180" />
+                                                              </td >
+                                                          </tr >
+                                                          </tbody >
+
 					</table >
 					<p >Pressing 'Create Job' will make the system build following job workflows</p >
 
@@ -692,6 +761,8 @@ isInit=true;
 
 					<input type = "submit" class = "btn btn-warning" value = "Create Data import Jobs" >
 				</section >
+
+
 
 				<h3 >Confirm</h3 >
 				<section >

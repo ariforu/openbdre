@@ -121,7 +121,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>md-ui</finalName>
+        <finalName>md-ui-${project.version}</finalName>
         <plugins>
 
 
@@ -140,6 +140,23 @@
                                 **/jquery.min.js,**/bootstrap.js,**/angular.min.js,**/moment.js,**/Chart.js,**/jquery.fancytree.js,**/jquery.fancytree.table.js,**/jquery.fancytree.gridnav.js,**/jquery.steps.min.js,**/handsontable.full.js,**/*jquery.jtable.js,**/viz.js,**/localization/jquery.jtable*js,**/external/json2*js,**/extensions/jquery.jtable.aspnet*js,**/*.png,**/*.css,**/*.less,**/*.gif,**/*.map,**/fonts/*.eot,**/*.svg,**/*.ttf,**/*.woff,**/*.woff2
                             </includes>
                             <outputDirectory>${project.build.directory}/js-dependencies</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>${project.packaging}</type>
+                                    <outputDirectory>${project.parent.build.directory}/lib/webapps</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>

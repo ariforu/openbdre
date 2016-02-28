@@ -9,6 +9,17 @@
 
 <head>
     <title>BDRE | Bigdata Ready Enterprise</title>
+
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	  //Please replace with your own analytics id
+	  ga('create', 'UA-72345517-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
+
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../js/jquery.min.js"></script>
     <link href="../css/jquery-ui-1.10.3.custom.css" rel="stylesheet">
@@ -210,6 +221,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label class="control-label col-sm-2" for="outputPath">HDFS Output Path:</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="outputPath" name="outputPath" placeholder="Enter the absolute Output Path" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-sm-2" for="busDomainId">Bus Domain Id:</label>
                                     <div class="col-sm-10">
                                         <select class="form-control" id="busDomainId" name="busDomainId">
@@ -254,7 +271,7 @@
 
             $scope.createJob =function (){
                 
-            $.ajax({                    
+                $.ajax({
                                         
                                         type: "POST",
                                         url: "/mdrest/crawler",
@@ -293,7 +310,7 @@
                                             console.log(createJobResult);
                                         }
 
-                                    });
+                });
             }
         });
     </script>
@@ -306,6 +323,24 @@
             transitionEffect: "slideLeft",
             stepsOrientation: "vertical",
             enableCancelButton: true,
+            onStepChanging: function(event, currentIndex, newIndex) {
+            			console.log(currentIndex + 'current ' + newIndex + 'process Name');
+            			if(currentIndex == 2 && newIndex == 3 && document.getElementById('processFieldsForm1').elements[0].value == "" && document.getElementById('processFieldsForm1').elements[1].value == "") {
+            				$("#div-dialog-warning").dialog({
+            					title: "",
+            					resizable: false,
+            					height: 'auto',
+            					modal: true,
+            					buttons: {
+            						"Ok": function() {
+            							$(this).dialog("close");
+            						}
+            					}
+            				}).text("Please Enter Process Name and Description");
+            				return false;
+            			}
+            			return true;
+            },
             onFinished: function(event, currentIndex) {
                                 if(created == 1) {
                                     location.href = '<c:url value="/pages/process.page"/>';

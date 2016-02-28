@@ -10,6 +10,16 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+	  //Please replace with your own analytics id
+	  ga('create', 'UA-72345517-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
+
     <script src="../js/jquery.min.js"></script>
     <link href="../css/jquery-ui-1.10.3.custom.css" rel="stylesheet">
     <link href="../css/css/bootstrap.min.css" rel="stylesheet" />
@@ -49,7 +59,7 @@
                                         <form role="form" id="propertiesFieldsForm">
                                             <div class="form-group">
                                                 <label >File Monitoring Dir Name</label>
-                                                <input type="text" class="form-control" name="monitoredDirName" placeholder="File Monitoring Dir Name" value=<%=System.getProperty("user.home")+"\\mondir"%> required>
+                                                <input type="text" class="form-control" name="monitoredDirName" placeholder="File Monitoring Dir Name" value=<%=System.getProperty("user.home")+"/mondir"%> required>
                                             </div>
                                             <div class="form-group">
                                                 <label >File Pattern</label>
@@ -73,6 +83,22 @@
                                                 <label>Polling Interval(in milliseconds)</label>
                                                 <input type="number" class="form-control" name="sleepTime" value="500" placeholder="time in milliseconds" required>
                                             </div>
+
+                                             <div class="form-group">
+                                                 <label>Process Name:</label>
+                                                 <input type="text" class="form-control"  id="processName" name="processName" placeholder="Enter Process Name" required>
+                                             </div>
+                                             <div class="form-group">
+                                                 <label>Process Description:</label>
+                                                  <input type="text" class="form-control" id="processDescription" name="processDescription" placeholder="Enter Process Description" required>
+                                             </div>
+                                             <div class="form-group">
+                                                  <label>Bus Domain Id:</label>
+                                                   <select class="form-control" id="busDomainId" name="busDomainId">
+                                                    <option ng-repeat="busDomain in busDomains.Options" value="{{busDomain.Value}}" name="busDomainId">{{busDomain.DisplayText}}</option>
+                                                    </select>
+                                             </div>
+
                                             <input type="submit" id="createJobButton" class="btn btn-primary" ng-click="createJob()"/>
                                         </form>
 
@@ -95,6 +121,19 @@
                         var createJobResult;
                         var app = angular.module('myApp', []);
                         app.controller('myCtrl', function($scope) {
+                        $scope.busDomains = {};
+                                    $.ajax({
+                                    url: '/mdrest/busdomain/options/',
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        async: false,
+                                        success: function (data) {
+                                            $scope.busDomains = data;
+                                        },
+                                        error: function () {
+                                            alert('danger');
+                                        }
+                                    });
 
                                 $scope.createJob =function (){
 
@@ -352,7 +391,7 @@
                                    create: false,
                                    edit: false,
                                    display: function(data) {
-                                       return '<span class="label label-primary" onclick="fetchPipelineInfo(' + data.record.processId + ')">Display</span> ';
+                                       return '<span class="label label-primary" onclick="fetchPipelineInfo(' + data.record.processId + ')"></span> ';
                                    },
                                }
                            }
